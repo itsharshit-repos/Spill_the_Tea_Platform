@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field
 
 app = FastAPI()
@@ -28,3 +28,13 @@ def create_tea(tea: TeaCreate):
 @app.get("/spill-tea", response_model=list[TeaResponse])
 def get_all_tea():
     return fake_db
+
+@app.get("/spill-tea/{tea_id}", response_model=TeaResponse)
+def get_tea_by_id(tea_id: int):
+    for tea_item in fake_db:
+        if tea_item.get("id") == tea_id:
+            return tea_item
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Tea not found"
+    )
