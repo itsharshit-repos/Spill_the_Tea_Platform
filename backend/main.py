@@ -6,9 +6,6 @@ import models
 
 app = FastAPI()
 
-models.Base.metadata.create_all(bind=engine) # This command tells SQLAlchemy: "Look at all the models that inherited 
-# from Base, check if those tables exist in the database, and if they don't, create them
-
 class TeaCreate(BaseModel):
     title: str = Field(..., min_length=3, max_length=50)
     content: str = Field(..., min_length=10, max_length=1000)
@@ -64,7 +61,7 @@ def update_tea(tea_id: int, tea_update: TeaUpdate, db: Session = Depends(get_db)
     update_data = tea_update.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(tea_item, key, value)
-        
+            
     # commit changes
     db.commit()
     db.refresh(tea_item)
