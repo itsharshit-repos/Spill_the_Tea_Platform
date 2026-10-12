@@ -14,3 +14,13 @@ class TeaResponse(BaseModel):
 class TeaUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=3, max_length=50)
     content: str | None = Field(default=None, min_length=10, max_length=1000)
+
+class UserCreate(BaseModel):    
+    username: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=6)
+
+class UserResponse(BaseModel):
+    id: int 
+    username: str
+
+    model_config = {"from_attributes": True}
