@@ -1,10 +1,7 @@
 import bcrypt
 import jwt
 from datetime import datetime, timedelta, timezone
-
-SECRET_KEY = "spill_the_tea_super_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+from config import settings
 
 def hash_password(password: str) -> str:
     """Takes a raw password and returns the bcrypt hash."""
@@ -27,8 +24,8 @@ def create_access_token(data: dict):
     """Creates a mathematically signed JWT containing user data."""
     to_encode = data.copy()
     # Set the token to expire in 30 minutes
-    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.access_token_expire_minutes)
     to_encode.update({"exp": expire})
     # Generate the JWT string
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
     return encoded_jwt
