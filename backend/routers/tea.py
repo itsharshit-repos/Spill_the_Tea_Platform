@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 import models
 import schemas
+import oauth2
 
 router = APIRouter(
     prefix="/spill-tea",
@@ -10,7 +11,10 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=schemas.TeaResponse, status_code=201)
-def create_tea(tea: schemas.TeaCreate, db: Session = Depends(get_db)):
+def create_tea(tea: schemas.TeaCreate, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
+    # checking who is currently making this request
+    print(f"User {current_user.username} is spilling the tea!")
+    
     new_tea = models.Tea(title=tea.title, content=tea.content)
     # add it to the database
     db.add(new_tea)
